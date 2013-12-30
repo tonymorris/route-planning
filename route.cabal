@@ -27,7 +27,13 @@ library
   build-depends:
                     base < 5 && >= 3
                     , lens >= 3.10
-                    , coordinate >= 0.0.2
+                    , coordinate >= 0.0.8
+                    , separated >= 0.0.8
+                    , containers >= 0.5.0.0
+                    , semigroups >= 0.8
+                    , semigroupoids >= 4.0
+                    , xsd >= 0.5.0.1
+                    , text >= 1.0
 
   ghc-options:
                     -Wall
@@ -39,7 +45,24 @@ library
                     src
 
   exposed-modules:
-                    Data.GPS.Route
+                    Data.Geo.Test
+                    Data.Geo.Route
+                    Data.Geo.Route.Author
+                    Data.Geo.Route.Comment
+                    Data.Geo.Route.Copyright
+                    Data.Geo.Route.Description
+                    Data.Geo.Route.Distance
+                    Data.Geo.Route.Elevation
+                    Data.Geo.Route.Email
+                    Data.Geo.Route.Gpx
+                    Data.Geo.Route.Link
+                    Data.Geo.Route.Name
+                    Data.Geo.Route.Osrm
+                    Data.Geo.Route.Plan
+                    Data.Geo.Route.Symbol
+                    Data.Geo.Route.Track
+                    Data.Geo.Route.TrackHeader
+                    Data.Geo.Route.Waypoint
 
 test-suite doctests
   type:
