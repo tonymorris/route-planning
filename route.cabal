@@ -45,7 +45,6 @@ library
                     src
 
   exposed-modules:
-                    Data.Geo.Test
                     Data.Geo.Route
                     Data.Geo.Route.Author
                     Data.Geo.Route.Comment
