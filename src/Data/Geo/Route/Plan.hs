@@ -51,17 +51,17 @@ mkPlan' n d a c =
 
 instance Gpx Plan where
   gpx (Plan n d a c t) =
-    let gpx' r = foldMap gpx r
+    let gpx' = foldMap gpx
         metadata =
-          case isNothing n && isNothing d && isNothing a && isNothing c of
-            True -> ""
-            False -> printf "%s%s%s%s%s%s"
-                            "<metadata>"
-                            (gpx' n)
-                            (gpx' d)
-                            (gpx' a)
-                            (gpx' c)
-                            "</metadata>"
+          if isNothing n && isNothing d && isNothing a && isNothing c
+          then ""
+          else printf "%s%s%s%s%s%s"
+                 "<metadata>"
+                 (gpx' n)
+                 (gpx' d)
+                 (gpx' a)
+                 (gpx' c)
+                 "</metadata>"
         wpt =
           trackPoints t >>= gpx
         rte ::

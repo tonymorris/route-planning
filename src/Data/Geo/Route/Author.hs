@@ -9,7 +9,7 @@ module Data.Geo.Route.Author(
 import Prelude(Show)
 import Control.Applicative((<$>))
 import Control.Lens(Lens', lens)
-import Data.Bool(Bool(False, True), (&&))
+import Data.Bool((&&))
 import Data.Eq(Eq)
 import Data.Foldable(Foldable(foldMap))
 import Data.Function(id)
@@ -58,15 +58,15 @@ authorLink =
 
 instance Gpx Author where
   gpx (Author n e l) =
-    let gpx' r = foldMap gpx r
-    in case isNothing n && isNothing e && isNothing l of
-         True -> ""
-         False -> printf "%s%s%s%s%s"
-                         "<author>"
-                         (gpx' n)
-                         (gpx' e)
-                         (gpx' l)
-                         "</author>"
+    let gpx' = foldMap gpx
+    in if isNothing n && isNothing e && isNothing l
+       then ""
+       else printf "%s%s%s%s%s"
+              "<author>"
+              (gpx' n)
+              (gpx' e)
+              (gpx' l)
+              "</author>"
 
 class HasAuthor t where
   author ::

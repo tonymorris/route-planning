@@ -42,7 +42,7 @@ instance HasComments TrackHeader where
 
 instance HasDescriptions TrackHeader where
   descriptions f (TrackHeader n c d) =
-    (\d' -> TrackHeader n c d') <$> traverse f d
+    TrackHeader n c <$> traverse f d
 
 mkTrackHeader ::
   Maybe Name
@@ -101,5 +101,5 @@ infixr 5 <..^
 
 instance Gpx TrackHeader where
   gpx (TrackHeader n c d) =
-    let gpx' r = foldMap gpx r
+    let gpx' = foldMap gpx
     in printf "%s%s%s" (gpx' n) (gpx' c) (gpx' d)
