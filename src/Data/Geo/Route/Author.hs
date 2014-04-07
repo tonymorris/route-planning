@@ -19,6 +19,7 @@ import Data.Geo.Route.Link(Link)
 import Data.Geo.Route.Name(HasNames(names), Name)
 import Data.Maybe(Maybe(Nothing, Just), isNothing)
 import Data.Ord(Ord)
+import Data.String(String)
 import Data.Traversable(Traversable(traverse))
 import Text.Printf(printf)
 
@@ -58,7 +59,8 @@ authorLink =
 
 instance Gpx Author where
   gpx (Author n e l) =
-    let gpx' = foldMap gpx
+    let gpx' :: (Foldable t, Gpx a) => t a -> String
+        gpx' = foldMap gpx
     in if isNothing n && isNothing e && isNothing l
        then ""
        else printf "%s%s%s%s%s"

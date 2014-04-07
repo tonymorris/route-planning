@@ -101,5 +101,6 @@ infixr 5 <..^
 
 instance Gpx TrackHeader where
   gpx (TrackHeader n c d) =
-    let gpx' = foldMap gpx
+    let gpx' :: (Foldable t, Gpx a) => t a -> String
+        gpx' = foldMap gpx
     in printf "%s%s%s" (gpx' n) (gpx' c) (gpx' d)

@@ -7,7 +7,7 @@ module Data.Geo.Route.Plan(
 import Prelude(Show)
 import Control.Applicative((<$>))
 import Control.Monad(Monad((>>=)))
-import Data.Bool(Bool(True, False), (&&))
+import Data.Bool((&&))
 import Data.Eq(Eq)
 import Data.Foldable(Foldable(foldMap))
 import Data.Ord(Ord)
@@ -51,7 +51,8 @@ mkPlan' n d a c =
 
 instance Gpx Plan where
   gpx (Plan n d a c t) =
-    let gpx' = foldMap gpx
+    let gpx' :: (Foldable t, Gpx a) => t a -> String
+        gpx' = foldMap gpx
         metadata =
           if isNothing n && isNothing d && isNothing a && isNothing c
           then ""

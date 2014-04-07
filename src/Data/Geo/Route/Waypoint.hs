@@ -110,7 +110,7 @@ instance HasDescriptions Waypoint where
 
 instance HasSymbols Waypoint where
   symbols f (Waypoint c e d n m s y) =
-    (\y' -> Waypoint c e d n m s y') <$> traverse f y
+    Waypoint c e d n m s <$> traverse f y
 
 class HasWaypoint t where
   waypoint ::
@@ -138,7 +138,8 @@ gpxWaypoint element w =
       m = firstOf comments w
       s = firstOf descriptions w
       y = firstOf symbols w
-      gpx' r = foldMap gpx r
+      gpx' :: (Foldable t, Gpx a) => t a -> String
+      gpx' = foldMap gpx
   in printf "<%s lat=\"%0.6f\" lon=\"%0.6f\">%s%s%s%s%s%s</%s>" element lat lon (gpx' e) (gpx' d) (gpx' n) (gpx' m) (gpx' s) (gpx' y) element
 
 instance Gpx Waypoint where
