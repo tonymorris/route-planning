@@ -2,7 +2,7 @@ module Data.Geo.Route.Gpx(
   Gpx(..)
 ) where
 
-import Control.Lens((#))
+import Control.Lens(( # ))
 import Data.List((++))
 import Data.String(String)
 import Data.Text(unpack)
