@@ -10,8 +10,9 @@ module Data.Geo.Route.Copyright(
 import Prelude(Show)
 import Control.Lens(Lens', lens)
 import Data.Eq(Eq)
-import Data.Foldable(Foldable(fold))
+import Data.Foldable(Foldable(foldMap))
 import Data.Geo.Route.Gpx(Gpx(gpx))
+import Data.List((++))
 import Data.Maybe(Maybe(Just, Nothing))
 import Data.Ord(Ord)
 import Data.String(String)
@@ -55,4 +56,4 @@ copyrightLicense =
 
 instance Gpx Copyright where
   gpx (Copyright a y l) =
-    printf "<copyright author=\"%s\">%s%s</copyright>" a (fold y) (fold l)
+    printf "<copyright author=\"%s\">%s%s</copyright>" a (foldMap (\y' -> "<year>" ++ y' ++ "</year>") y) (foldMap (\l' -> "<license>" ++ l' ++ "</license>") l)
