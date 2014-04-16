@@ -1,7 +1,7 @@
 module Data.Geo.Route.Name(
   Name
 , HasName(..)
-, HasNames(..)
+, HasMaybeName(..)
 , nameIso
 , (<.>)
 ) where
@@ -11,8 +11,9 @@ import Data.Eq(Eq)
 import Data.Function(id)
 import Data.Ord(Ord)
 import Data.List((++))
+import Data.Maybe(Maybe)
 import Data.String(String, IsString(..))
-import Control.Lens(Lens', Traversal', Iso', iso, set)
+import Control.Lens(Lens', Iso', iso, (?~))
 import Data.Geo.Route.Gpx(Gpx(gpx))
 
 newtype Name =
@@ -33,13 +34,9 @@ instance HasName Name where
   name =
     id
 
-class HasNames t where
-  names ::
-    Traversal' t Name
-
-instance HasNames Name where
-  names =
-    id
+class HasMaybeName t where
+  mname ::
+    Lens' t (Maybe Name)
 
 instance IsString Name where
   fromString =
@@ -50,11 +47,11 @@ instance Gpx Name where
     "<name>" ++ n ++ "</name>"
 
 (<.>) ::
-  HasNames t =>
+  HasMaybeName t =>
   Name
   -> t
   -> t
 (<.>) =
-  set names
+  (?~) mname
 
 infixr 5 <.>

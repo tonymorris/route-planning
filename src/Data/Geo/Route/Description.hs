@@ -1,7 +1,7 @@
 module Data.Geo.Route.Description(
   Description
 , HasDescription(..)
-, HasDescriptions(..)
+, HasMaybeDescription(..)
 , descriptionIso
 , (<~>)
 ) where
@@ -10,9 +10,10 @@ import Prelude(Show)
 import Data.Eq(Eq)
 import Data.Function(id)
 import Data.List((++))
+import Data.Maybe(Maybe)
 import Data.Ord(Ord)
 import Data.String(String, IsString(fromString))
-import Control.Lens(Lens', Traversal', Iso', iso, set)
+import Control.Lens(Lens', Iso', iso, (?~))
 import Data.Geo.Route.Gpx(Gpx(gpx))
 
 newtype Description =
@@ -33,13 +34,9 @@ instance HasDescription Description where
   description =
     id
 
-class HasDescriptions t where
-  descriptions ::
-    Traversal' t Description
-
-instance HasDescriptions Description where
-  descriptions =
-    id
+class HasMaybeDescription t where
+  mdescription ::
+    Lens' t (Maybe Description)
 
 instance IsString Description where
   fromString =
@@ -50,11 +47,11 @@ instance Gpx Description where
     "<desc>" ++ d ++ "</desc>"
 
 (<~>) ::
-  HasDescriptions t =>
+  HasMaybeDescription t =>
   Description
   -> t
   -> t
 (<~>) =
-  set descriptions
+  (?~) mdescription
 
 infixr 5 <~>

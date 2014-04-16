@@ -1,7 +1,7 @@
 module Data.Geo.Route.Symbol(
   Symbol
 , HasSymbol(..)
-, HasSymbols(..)
+, HasMaybeSymbol(..)
 , symbolIso
 , (<@>)
 ) where
@@ -10,9 +10,10 @@ import Prelude(Show)
 import Data.Eq(Eq)
 import Data.Function(id)
 import Data.List((++))
+import Data.Maybe(Maybe)
 import Data.Ord(Ord)
 import Data.String(String, IsString(fromString))
-import Control.Lens(Lens', Iso', Traversal', iso, set)
+import Control.Lens(Lens', Iso', iso, (?~))
 import Data.Geo.Route.Gpx(Gpx(gpx))
 
 newtype Symbol =
@@ -33,13 +34,9 @@ instance HasSymbol Symbol where
   symbol =
     id
 
-class HasSymbols t where
-  symbols ::
-    Traversal' t Symbol
-
-instance HasSymbols Symbol where
-  symbols =
-    id
+class HasMaybeSymbol t where
+  msymbol ::
+    Lens' t (Maybe Symbol)
 
 instance IsString Symbol where
   fromString =
@@ -50,11 +47,11 @@ instance Gpx Symbol where
     "<sym>" ++ s ++ "</sym>"
 
 (<@>) ::
-  HasSymbols t =>
+  HasMaybeSymbol t =>
   Symbol
   -> t
   -> t
 (<@>) =
-  set symbols
+  (?~) msymbol
 
 infixr 5 <@>

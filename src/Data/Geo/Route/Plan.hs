@@ -5,7 +5,7 @@ module Data.Geo.Route.Plan(
 ) where
 
 import Prelude(Show)
-import Control.Applicative((<$>))
+import Control.Lens(lens)
 import Control.Monad(Monad((>>=)))
 import Data.Bool((&&))
 import Data.Eq(Eq)
@@ -13,12 +13,11 @@ import Data.Foldable(Foldable(foldMap))
 import Data.Ord(Ord)
 import Data.Maybe(Maybe(Nothing, Just), isNothing)
 import Data.String(String)
-import Data.Traversable(Traversable(traverse))
 import Data.Geo.Route.Author(Author)
 import Data.Geo.Route.Copyright(Copyright)
-import Data.Geo.Route.Description(Description, HasDescriptions(descriptions))
+import Data.Geo.Route.Description(Description, HasMaybeDescription(mdescription))
 import Data.Geo.Route.Gpx(Gpx(gpx))
-import Data.Geo.Route.Name(Name, HasNames(names))
+import Data.Geo.Route.Name(Name, HasMaybeName(mname))
 import Data.Geo.Route.Osrm(Osrm(allCoordinates))
 import Data.Geo.Route.Track(Track, trackPoints)
 import Data.Geo.Route.Waypoint(gpxWaypoint)
@@ -83,10 +82,10 @@ instance Osrm Plan where
   allCoordinates (Plan _ _ _ _ t) =
     allCoordinates t
 
-instance HasNames Plan where
-  names f (Plan n d a c t) =
-    (\n' -> Plan n' d a c t) <$> traverse f n
+instance HasMaybeName Plan where
+  mname =
+    lens (\(Plan n _ _ _ _) -> n) (\(Plan _ d a c t) n -> Plan n d a c t)
 
-instance HasDescriptions Plan where
-  descriptions f (Plan n d a c t) =
-    (\d' -> Plan n d' a c t) <$> traverse f d
+instance HasMaybeDescription Plan where
+  mdescription =
+    lens (\(Plan _ d _ _ _) -> d) (\(Plan n _ a c t) d -> Plan n d a c t)

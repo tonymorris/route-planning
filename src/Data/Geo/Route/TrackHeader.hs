@@ -9,8 +9,7 @@ module Data.Geo.Route.TrackHeader(
 ) where
 
 import Prelude(Show)
-import Control.Applicative((<$>))
-import Control.Lens(Lens', (^.), set)
+import Control.Lens(Lens', lens, (^.), set)
 import Data.Eq(Eq)
 import Data.Foldable(Foldable(foldMap))
 import Data.Function(id)
@@ -18,11 +17,10 @@ import Data.Functor(Functor(fmap))
 import Data.Maybe(Maybe(Just, Nothing))
 import Data.Ord(Ord)
 import Data.String(String)
-import Data.Traversable(Traversable(traverse))
-import Data.Geo.Route.Comment(Comment, HasComments(comments), commentIso)
-import Data.Geo.Route.Description(Description, HasDescriptions(descriptions), descriptionIso)
+import Data.Geo.Route.Comment(Comment, HasMaybeComment(mcomment), commentIso)
+import Data.Geo.Route.Description(Description, HasMaybeDescription(mdescription), descriptionIso)
 import Data.Geo.Route.Gpx(Gpx(gpx))
-import Data.Geo.Route.Name(Name, HasNames(names), nameIso)
+import Data.Geo.Route.Name(Name, HasMaybeName(mname), nameIso)
 import Text.Printf(printf)
 
 data TrackHeader =
@@ -32,17 +30,17 @@ data TrackHeader =
     (Maybe Description)
   deriving (Eq, Ord, Show)
 
-instance HasNames TrackHeader where
-  names f (TrackHeader n c d) =
-    (\n' -> TrackHeader n' c d) <$> traverse f n
+instance HasMaybeName TrackHeader where
+  mname =
+    lens (\(TrackHeader n _ _) -> n) (\(TrackHeader _ c d) n -> TrackHeader n c d)
 
-instance HasComments TrackHeader where
-  comments f (TrackHeader n c d) =
-    (\c' -> TrackHeader n c' d) <$> traverse f c
+instance HasMaybeComment TrackHeader where
+  mcomment =
+    lens (\(TrackHeader _ c _) -> c) (\(TrackHeader n _ d) c -> TrackHeader n c d)
 
-instance HasDescriptions TrackHeader where
-  descriptions f (TrackHeader n c d) =
-    TrackHeader n c <$> traverse f d
+instance HasMaybeDescription TrackHeader where
+  mdescription =
+    lens (\(TrackHeader _ _ d) -> d) (\(TrackHeader n c _) d -> TrackHeader n c d)
 
 mkTrackHeader ::
   Maybe Name

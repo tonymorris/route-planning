@@ -7,7 +7,6 @@ module Data.Geo.Route.Author(
 ) where
 
 import Prelude(Show)
-import Control.Applicative((<$>))
 import Control.Lens(Lens', lens)
 import Data.Bool((&&))
 import Data.Eq(Eq)
@@ -16,11 +15,10 @@ import Data.Function(id)
 import Data.Geo.Route.Email(Email)
 import Data.Geo.Route.Gpx(Gpx(gpx))
 import Data.Geo.Route.Link(Link)
-import Data.Geo.Route.Name(HasNames(names), Name)
+import Data.Geo.Route.Name(HasMaybeName(mname), Name)
 import Data.Maybe(Maybe(Nothing, Just), isNothing)
 import Data.Ord(Ord)
 import Data.String(String)
-import Data.Traversable(Traversable(traverse))
 import Text.Printf(printf)
 
 data Author =
@@ -43,9 +41,9 @@ mkAuthor' ::
 mkAuthor' e l a =
   Author (Just e) (Just l) (Just a)
 
-instance HasNames Author where
-  names f (Author n l a) =
-    (\n' -> Author n' l a) <$> traverse f n
+instance HasMaybeName Author where
+  mname =
+    lens (\(Author n _ _) -> n) (\(Author _ e l) n -> Author n e l)
 
 authorEmail ::
   Lens' Author (Maybe Email)

@@ -1,7 +1,7 @@
 module Data.Geo.Route.Comment(
   Comment
 , HasComment(..)
-, HasComments(..)
+, HasMaybeComment(..)
 , commentIso
 , (<!>)
 ) where
@@ -10,9 +10,10 @@ import Prelude(Show)
 import Data.Eq(Eq)
 import Data.Function(id)
 import Data.List((++))
+import Data.Maybe(Maybe)
 import Data.Ord(Ord)
 import Data.String(String, IsString(fromString))
-import Control.Lens(Lens', Iso', Traversal', iso, set)
+import Control.Lens(Lens', Iso', iso, (?~))
 import Data.Geo.Route.Gpx(Gpx(gpx))
 
 newtype Comment =
@@ -33,13 +34,9 @@ instance HasComment Comment where
   comment =
     id
 
-class HasComments t where
-  comments ::
-    Traversal' t Comment
-
-instance HasComments Comment where
-  comments =
-    id
+class HasMaybeComment t where
+  mcomment ::
+    Lens' t (Maybe Comment)
 
 instance IsString Comment where
   fromString =
@@ -50,11 +47,11 @@ instance Gpx Comment where
     "<cmt>" ++ c ++ "</cmt>"
 
 (<!>) ::
-  HasComments t =>
+  HasMaybeComment t =>
   Comment
   -> t
   -> t
 (<!>) =
-  set comments
+  (?~) mcomment
 
 infixr 5 <!>

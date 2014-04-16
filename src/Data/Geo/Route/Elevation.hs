@@ -3,7 +3,7 @@
 module Data.Geo.Route.Elevation(
   Elevation
 , HasElevation(..)
-, HasElevations(..)
+, HasMaybeElevation(..)
 , elevationIso
 , (<^>)
 ) where
@@ -14,8 +14,9 @@ import Data.Function(id)
 import Data.Geo.Route.Gpx(Gpx(gpx))
 import Data.Int(Int)
 import Data.List((++))
+import Data.Maybe(Maybe)
 import Data.Ord(Ord)
-import Control.Lens(Lens', Iso', Traversal', iso, set)
+import Control.Lens(Lens', Iso', iso, (?~))
 
 newtype Elevation =
   Elevation
@@ -35,24 +36,20 @@ instance HasElevation Elevation where
   elevation =
     id
 
-class HasElevations t where
-  elevations ::
-    Traversal' t Elevation
-
-instance HasElevations Elevation where
-  elevations =
-    id
+class HasMaybeElevation t where
+  melevation ::
+    Lens' t (Maybe Elevation)
 
 instance Gpx Elevation where
   gpx (Elevation e) =
     "<ele>" ++ show e ++ "</ele>"
 
 (<^>) ::
-  HasElevations t =>
+  HasMaybeElevation t =>
   Elevation
   -> t
   -> t
 (<^>) =
-  set elevations
+  (?~) melevation
 
 infixr 5 <^>
