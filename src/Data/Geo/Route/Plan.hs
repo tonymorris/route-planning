@@ -10,16 +10,18 @@ import Control.Monad(Monad((>>=)))
 import Data.Bool((&&))
 import Data.Eq(Eq)
 import Data.Foldable(Foldable(foldMap))
+import Data.Function((.))
 import Data.Ord(Ord)
 import Data.Maybe(Maybe(Nothing, Just), isNothing)
 import Data.String(String)
-import Data.Geo.Route.Author(Author)
-import Data.Geo.Route.Copyright(Copyright)
+import Data.Geo.Route.Author(Author, HasMaybeAuthor(mauthor))
+import Data.Geo.Route.Copyright(Copyright, HasMaybeCopyright(mcopyright))
 import Data.Geo.Route.Description(Description, HasMaybeDescription(mdescription))
 import Data.Geo.Route.Gpx(Gpx(gpx))
 import Data.Geo.Route.Name(Name, HasMaybeName(mname))
 import Data.Geo.Route.Osrm(Osrm(allCoordinates))
-import Data.Geo.Route.Track(Track, trackPoints)
+import Data.Geo.Route.Track(Track, HasTrack(track), trackPoints)
+import Data.Geo.Route.TrackHeader(HasTrackHeader(trackHeader))
 import Data.Geo.Route.Waypoint(gpxWaypoint)
 import Text.Printf(printf)
 
@@ -89,3 +91,19 @@ instance HasMaybeName Plan where
 instance HasMaybeDescription Plan where
   mdescription =
     lens (\(Plan _ d _ _ _) -> d) (\(Plan n _ a c t) d -> Plan n d a c t)
+
+instance HasMaybeAuthor Plan where
+  mauthor =
+    lens (\(Plan _ _ a _ _) -> a) (\(Plan n d _ c t) a -> Plan n d a c t)
+
+instance HasMaybeCopyright Plan where
+  mcopyright =
+    lens (\(Plan _ _ _ c _) -> c) (\(Plan n d a _ t) c -> Plan n d a c t)
+
+instance HasTrack Plan where
+  track =
+    lens (\(Plan _ _ _ _ t) -> t) (\(Plan n d a c _) t -> Plan n d a c t)
+
+instance HasTrackHeader Plan where
+  trackHeader =
+    track . trackHeader

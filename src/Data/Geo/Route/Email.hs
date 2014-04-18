@@ -1,13 +1,17 @@
 module Data.Geo.Route.Email(
   Email
-, email
+, mkEmail
 , emailId
 , emailDomain
+, HasEmail(..)
+, HasMaybeEmail(..)
 ) where
 
 import Prelude(Show)
 import Data.Geo.Route.Gpx(Gpx(gpx))
 import Control.Lens(Lens', lens)
+import Data.Function(id)
+import Data.Maybe(Maybe)
 import Data.String(String)
 import Data.Eq(Eq)
 import Data.Ord(Ord)
@@ -19,11 +23,11 @@ data Email =
     String -- domain
   deriving (Eq, Ord, Show)
 
-email ::
+mkEmail ::
   String
   -> String
   -> Email
-email =
+mkEmail =
   Email
 
 emailId ::
@@ -39,3 +43,15 @@ emailDomain =
 instance Gpx Email where
   gpx (Email i d) =
     printf "<email id=\"%s\" domain=\"%s\"/>" i d
+
+class HasEmail t where
+  email ::
+    Lens' t Email
+
+instance HasEmail Email where
+  email =
+    id
+
+class HasMaybeEmail t where
+  memail ::
+    Lens' t (Maybe Email)

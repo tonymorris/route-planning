@@ -1,16 +1,19 @@
 module Data.Geo.Route.Copyright(
   Copyright
-, copyright
-, copyright'
+, mkCopyright
+, mkCopyright'
 , copyrightAuthor
 , copyrightYear
 , copyrightLicense
+, HasCopyright(..)
+, HasMaybeCopyright(..)
 ) where
 
 import Prelude(Show)
 import Control.Lens(Lens', lens)
 import Data.Eq(Eq)
 import Data.Foldable(Foldable(foldMap))
+import Data.Function(id)
 import Data.Geo.Route.Gpx(Gpx(gpx))
 import Data.List((++))
 import Data.Maybe(Maybe(Just, Nothing))
@@ -25,18 +28,18 @@ data Copyright =
     (Maybe String) -- license
   deriving (Eq, Ord, Show)
 
-copyright ::
+mkCopyright ::
   String
   -> Copyright
-copyright a =
+mkCopyright a =
   Copyright a Nothing Nothing
 
-copyright' ::
+mkCopyright' ::
   String
   -> String
   -> String
   -> Copyright
-copyright' a y l =
+mkCopyright' a y l =
   Copyright a (Just y) (Just l)
 
 copyrightAuthor ::
@@ -57,3 +60,15 @@ copyrightLicense =
 instance Gpx Copyright where
   gpx (Copyright a y l) =
     printf "<copyright author=\"%s\">%s%s</copyright>" a (foldMap (\y' -> "<year>" ++ y' ++ "</year>") y) (foldMap (\l' -> "<license>" ++ l' ++ "</license>") l)
+
+class HasCopyright t where
+  copyright ::
+    Lens' t Copyright
+
+instance HasCopyright Copyright where
+  copyright =
+    id
+
+class HasMaybeCopyright t where
+  mcopyright ::
+    Lens' t (Maybe Copyright)

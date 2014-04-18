@@ -4,6 +4,8 @@ module Data.Geo.Route.Author(
 , mkAuthor'
 , authorEmail
 , authorLink
+, HasAuthor(..)
+, HasMaybeAuthor(..)
 ) where
 
 import Prelude(Show)
@@ -75,3 +77,7 @@ class HasAuthor t where
 instance HasAuthor Author where
   author =
     id
+
+class HasMaybeAuthor t where
+  mauthor ::
+    Lens' t (Maybe Author)

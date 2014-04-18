@@ -1,6 +1,6 @@
 module Data.Geo.Route.Link(
   Link
-, link
+, mkLink
 , linkHref
 , linkText
 , linkType
@@ -21,12 +21,12 @@ data Link =
     String -- type
   deriving (Eq, Ord, Show)
 
-link ::
+mkLink ::
   String
   -> String
   -> String
   -> Link
-link =
+mkLink =
   Link
 
 instance Gpx Link where

@@ -116,7 +116,6 @@ trackPoints ::
 trackPoints (Track _ t) =
   concat t
 
-
 class HasTrack t where
   track ::
     Lens' t Track
